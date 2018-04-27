@@ -12,6 +12,14 @@ public class Message {
     private String[] willingArrive;
     private Collection<Actor> realArrive;
 
+    public Message(Message message,Object object) {
+        this.from = message.from;
+        this.Async = message.Async;
+        this.object = object;
+        this.willingArrive = message.willingArrive;
+        this.realArrive = message.realArrive;
+    }
+
     public Message(Actor from, boolean async, Object object, Class type, String[] willingArrive, Collection<Actor> realArrive) {
         this.from = from;
         Async = async;
