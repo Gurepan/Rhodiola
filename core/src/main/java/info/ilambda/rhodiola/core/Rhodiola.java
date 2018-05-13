@@ -41,6 +41,11 @@ public class Rhodiola implements AutoCloseable {
         return this;
     }
 
+    public Rhodiola AsyncPost(Object o, String... targets) {
+        postOffice.post(o, true, targets);
+        return this;
+    }
+
     public static Rhodiola start() {
         return new Rhodiola();
     }

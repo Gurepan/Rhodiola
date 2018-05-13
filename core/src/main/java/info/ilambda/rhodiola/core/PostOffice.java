@@ -28,6 +28,13 @@ public class PostOffice {
         post(messageFactory.getMessage(checkNotNull(o), async));
     }
 
+    public void post(Object o, boolean async, String... targets) {
+        if (shutdown) {
+            throw new IllegalStateException("Rhodiola is stopped");
+        }
+        post(messageFactory.getMessage(checkNotNull(o), async, targets));
+    }
+
     public void post(Message message) {
         if (shutdown) {
             return;

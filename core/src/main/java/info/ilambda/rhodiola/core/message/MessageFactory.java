@@ -61,6 +61,10 @@ public class MessageFactory {
         return getMessage(o, o.getClass(), async, zeroStrings, null);
     }
 
+    public Message getMessage(Object o, boolean async,String ... targets) {
+        return getMessage(o, o.getClass(), async, targets, null);
+    }
+
     /**
      * {@link info.ilambda.rhodiola.core.annotation.PostBody}的发送方法
      *
