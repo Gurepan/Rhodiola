@@ -113,6 +113,14 @@ public class PostOffice {
         messageFactory.sync();
     }
 
+    public void register(Object o) {
+        if (shutdown) {
+            throw new IllegalStateException("Rhodiola is stopped");
+        }
+        actorContext.register(o);
+        messageFactory.sync();
+    }
+
     public void unRegister(Class o) {
         if (shutdown) {
             throw new IllegalStateException("Rhodiola is stopped");

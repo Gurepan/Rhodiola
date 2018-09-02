@@ -25,6 +25,22 @@ class ActorFactory {
     }
 
     Collection<Actor> getActor(Class c) {
+        Object origin;
+        try {
+            origin = c.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("Class must contain a public, no_parameter constructor: " + c.getCanonicalName());
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("Class must contain a public, no_parameter constructor: " + c.getCanonicalName());
+        }
+        return getActor(c, origin);
+    }
+
+    Collection<Actor> getActor(Object origin) {
+        return getActor(origin.getClass(), origin);
+    }
+
+    private Collection<Actor> getActor(Class c ,Object origin) {
         ActorGroup actorGroup = ClassUtils.getClassAnnotation(c, ActorGroup.class);
         String groupName;
         if (actorGroup == null || StringUtils.isBlank(actorGroup.groupName())) {
@@ -33,16 +49,8 @@ class ActorFactory {
             groupName = actorGroup.groupName();
         }
         LinkedList<Actor> actors = new LinkedList<>();
-        Object orgin;
-        try {
-            orgin = c.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Class must contain a public, no_parameter constructor: " + c.getCanonicalName());
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Class must contain a public, no_parameter constructor: " + c.getCanonicalName());
-        }
-        addCommonActor(c, groupName, actors, orgin);
-        addDefaultActor(c, groupName, actors, orgin);
+        addCommonActor(c, groupName, actors, origin);
+        addDefaultActor(c, groupName, actors, origin);
         return actors;
     }
 
@@ -95,25 +103,7 @@ class ActorFactory {
     }
 
     Collection<Actor> getActor() {
-        throw new IllegalStateException("'getActor()' method cannot be executed");
+        return null;
     }
 
-    static class PackScanActorFactory extends ActorFactory {
-
-        public PackScanActorFactory(Properties properties, PostOffice postOffice) {
-            super(properties, postOffice);
-        }
-
-        @Override
-        Collection<Actor> getActor() {
-            Collection<Class> classes = ClassUtils.scanPackage(ActorGroup.class);
-            LinkedList<Actor> actors = new LinkedList<>();
-            if (classes != null) {
-                for (Class aClass : classes) {
-                    actors.addAll(getActor(aClass));
-                }
-            }
-            return actors;
-        }
-    }
 }

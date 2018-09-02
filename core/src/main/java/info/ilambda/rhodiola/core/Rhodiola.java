@@ -26,6 +26,11 @@ public class Rhodiola implements AutoCloseable {
         return this;
     }
 
+    public Rhodiola register(Object actor) {
+        this.postOffice.register(actor);
+        return this;
+    }
+
     public Rhodiola unRegister(Class actor) {
         this.postOffice.unRegister(actor);
         return this;

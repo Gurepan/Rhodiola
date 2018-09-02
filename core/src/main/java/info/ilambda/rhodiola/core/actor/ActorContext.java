@@ -24,7 +24,7 @@ public class ActorContext {
         this.async = (Boolean) this.properties.get("async");
         this.commonActors = new ConcurrentHashMap<>();
         this.defaultActors = new ConcurrentHashMap<>();
-        this.actorFactory = (Boolean) this.properties.get("scanPackage") ? new ActorFactory.PackScanActorFactory(this.properties, checkNotNull(postOffice)) : new ActorFactory(this.properties, checkNotNull(postOffice));
+        this.actorFactory = (Boolean) this.properties.get("scanPackage") ? new PackScanActorFactory(this.properties, checkNotNull(postOffice)) : new ActorFactory(this.properties, checkNotNull(postOffice));
         init();
     }
 
@@ -92,6 +92,15 @@ public class ActorContext {
      * @param o
      */
     public void register(Class o) {
+        Collection<Actor> actors = actorFactory.getActor(o);
+        if (actors != null) {
+            for (Actor actor : actors) {
+                register0(actor);
+            }
+        }
+    }
+
+    public void register(Object o) {
         Collection<Actor> actors = actorFactory.getActor(o);
         if (actors != null) {
             for (Actor actor : actors) {
